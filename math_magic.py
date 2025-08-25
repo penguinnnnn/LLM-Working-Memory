@@ -11,10 +11,11 @@ NUMBER = 10
 REPEAT = 150
 RETRY_NUM = 10
 COT = False
-cot_string = 'CoT-' if COT else ''
 MODEL = 'gpt-4o-2024-08-06'
+
 NAME_IN_PATH = MODEL[MODEL.find('/') + 1:]
 BASE_DIR = f'results/math_magic/{NAME_IN_PATH}-{NUMBER}'
+cot_string = 'CoT-' if COT else ''
 PATH = os.path.join(BASE_DIR, f'{cot_string}.csv')
 
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -50,12 +51,12 @@ def construct_prompt():
     random_number = random.randint(1, 3)
     
     messages.append({"role": "user", "content": f"Remove the first {random_number} numbers. We will never need it anymore."})
-    messages.append({"role": "assistant", "content": f"Okay! Now I have {8 - random_number} numbers. What’s next?"})
+    messages.append({"role": "assistant", "content": f"Okay! Now I have {7 - random_number} numbers. What’s next?"})
     
     messages.append({"role": "user", "content": f"Take the first number and move it to the end. Repeat this seven times."})
     messages.append({"role": "assistant", "content": f"Understood! Now my sequence has rearranged. What’s next?"})
     
-    messages.append({"role": "user", "content": f"Take the first number and move it to the end, then remove the second number. Repeat this {8 - random_number - 1} times."})
+    messages.append({"role": "user", "content": f"Take the first number and move it to the end, then remove the second number. Repeat this {6 - random_number} times."})
     messages.append({"role": "assistant", "content": f"Got it! Now I have only 1 number. What’s next?"})
 
     last_prompt = "Tell me what the last remaining number is. Do you remember the number you set aside at the beginning? Tell me what that number was. You can only reply in JSON format: {\"final_number\": \"a_number_from_1_to_" + str({NUMBER}) + "\", \"put_aside_number\": \"a_number_from_1_to_" + str({NUMBER}) + "\"}"
