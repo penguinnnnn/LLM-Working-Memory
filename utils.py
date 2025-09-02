@@ -38,15 +38,23 @@ def build_model(model_name):
     return client
 
 
-def ask_llm(client, model, msgs, temperature=1.0, top_p=1.0, max_tokens=2048):
+def ask_llm(client, model, msgs, temperature=1.0, top_p=1.0, max_tokens=4096):
     try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=msgs,
-            temperature=temperature,
-            top_p=top_p,
-            max_tokens=max_tokens
-        )
+        if model.startswith("o"):
+            response = client.chat.completions.create(
+                model=model,
+                messages=msgs,
+                temperature=temperature,
+                top_p=top_p
+            )
+        else:
+            response = client.chat.completions.create(
+                model=model,
+                messages=msgs,
+                temperature=temperature,
+                top_p=top_p,
+                max_tokens=max_tokens
+            )
         return response.choices[0].message.content
     except Exception as e:
         return f"[ERROR calling model]: {e}"

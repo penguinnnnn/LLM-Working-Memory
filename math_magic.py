@@ -11,7 +11,7 @@ NUMBER = 10
 REPEAT = 150
 RETRY_NUM = 10
 COT = False
-MODEL = 'gpt-4o-2024-08-06'
+MODEL = 'Qwen/Qwen2.5-7B-Instruct-Turbo'
 
 NAME_IN_PATH = MODEL[MODEL.find('/') + 1:]
 BASE_DIR = f'results/math_magic/{NAME_IN_PATH}-{NUMBER}'
@@ -34,7 +34,7 @@ def construct_prompt():
     
     random_number = random.randint(1, 7)
 
-    messages.append({"role": "user", "content": f"Take the first {random_number} numbers and move them to the end."})
+    messages.append({"role": "user", "content": f"Move the first {random_number} numbers to the end."})
     messages.append({"role": "assistant", "content": f"Got it! Now I have moved the numbers. What’s next?"})
     
     messages.append({"role": "user", "content": f"Take the first 3 numbers and insert them anywhere in the middle."})
@@ -53,15 +53,15 @@ def construct_prompt():
     messages.append({"role": "user", "content": f"Remove the first {random_number} numbers. We will never need it anymore."})
     messages.append({"role": "assistant", "content": f"Okay! Now I have {7 - random_number} numbers. What’s next?"})
     
-    messages.append({"role": "user", "content": f"Take the first number and move it to the end. Repeat this seven times."})
+    messages.append({"role": "user", "content": f"Move the first number to the end. Repeat this seven times."})
     messages.append({"role": "assistant", "content": f"Understood! Now my sequence has rearranged. What’s next?"})
     
-    messages.append({"role": "user", "content": f"Take the first number and move it to the end, then remove the second number. Repeat this {6 - random_number} times."})
+    messages.append({"role": "user", "content": f"Remove the second number, and then move the first number to the end. Repeat this {6 - random_number} times."})
     messages.append({"role": "assistant", "content": f"Got it! Now I have only 1 number. What’s next?"})
 
     last_prompt = "Tell me what the last remaining number is. Do you remember the number you set aside at the beginning? Tell me what that number was. You can only reply in JSON format: {\"final_number\": \"a_number_from_1_to_" + str({NUMBER}) + "\", \"put_aside_number\": \"a_number_from_1_to_" + str({NUMBER}) + "\"}"
     if COT:
-        last_prompt.replace("You can only reply", "Let's think step by step. Output your analysis first. At the end, reply")
+        last_prompt = last_prompt.replace("You can only reply", "Let's think step by step. Output your analysis first. At the end, reply")
     messages.append({"role": "user", "content": last_prompt})
 
     return messages

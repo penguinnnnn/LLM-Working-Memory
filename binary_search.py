@@ -12,9 +12,9 @@ Q_NUMBER = 50
 RETRY_NUM = 5
 
 OBJECT_APPEAR = 'NO' # Options: 'NO', 'FIRST', 'ALL'
-HINT_MODE = False
+HINT_MODE = True
 
-MODEL = 'gpt-4o-mini-2024-07-18'
+MODEL = 'gpt-4o-2024-08-06'
 NAME_IN_PATH = MODEL.split("/")[-1]
 
 BASE_DIR = f'results/binary_search/{NAME_IN_PATH}-{Q_NUMBER}'
@@ -250,5 +250,5 @@ def run_analysis(filename, bin_size=10):
 
 
 if __name__ == "__main__":
-    run_test()
+    # run_test()
     run_analysis(FILENAME, 10)
