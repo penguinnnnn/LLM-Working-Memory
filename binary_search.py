@@ -12,9 +12,9 @@ Q_NUMBER = 50
 RETRY_NUM = 5
 
 OBJECT_APPEAR = 'NO' # Options: 'NO', 'FIRST', 'ALL'
-HINT_MODE = True
+HINT_MODE = False
 
-MODEL = 'gpt-4o-2024-08-06'
+MODEL = 'random'
 NAME_IN_PATH = MODEL.split("/")[-1]
 
 BASE_DIR = f'results/binary_search/{NAME_IN_PATH}-{Q_NUMBER}'
@@ -23,7 +23,7 @@ FILENAME = os.path.join(BASE_DIR, f'{OBJECT_APPEAR}{HINT_STRING}.csv')
 
 os.makedirs(BASE_DIR, exist_ok=True)
 
-CLIENT = build_model(MODEL)
+CLIENT = build_model(MODEL) if MODEL != 'random' else ''
 
 PROPERTY = ["volume", "length", "weight", "density", "hardness"]
 ADJ = {
@@ -185,15 +185,18 @@ def run_test():
             messages.append({"role": "user", "content": query})
     
             response = ''
-            for attempt in range(RETRY_NUM):
-                try:
-                    response_text = ask_llm(CLIENT, MODEL, messages)
-                    answer = response_text.lower().replace('.', '').replace(' ', '')
-                    if answer in ["no", "yes"]:
-                        break
-                except Exception as e:
-                    print(f"Failed: {e}; Attempt {attempt+1} failed; retrying...")
-                    time.sleep(1)
+            if MODEL == 'random':
+                answer = random.choice(["no", "yes"])
+            else:
+                for attempt in range(RETRY_NUM):
+                    try:
+                        response_text = ask_llm(CLIENT, MODEL, messages)
+                        answer = response_text.lower().replace('.', '').replace(' ', '')
+                        if answer in ["no", "yes"]:
+                            break
+                    except Exception as e:
+                        print(f"Failed: {e}; Attempt {attempt+1} failed; retrying...")
+                        time.sleep(1)
     
             messages.append({"role": "assistant", "content": answer})
             question_count += 1
@@ -250,5 +253,5 @@ def run_analysis(filename, bin_size=10):
 
 
 if __name__ == "__main__":
-    # run_test()
+    run_test()
     run_analysis(FILENAME, 10)

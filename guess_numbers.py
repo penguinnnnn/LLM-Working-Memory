@@ -13,7 +13,9 @@ REPEAT = 200
 RETRY_NUM = 5
 MODEL = 'gpt-4o-2024-08-06'
 NAME_IN_PATH = MODEL.split("/")[-1]
-BASE_DIR = f'results/guess_numbers/{NAME_IN_PATH}-{RANGE}'
+TEMP = 1.0
+TOPP = 0.1
+BASE_DIR = f'results/guess_numbers_T{TEMP}P{TOPP}/{NAME_IN_PATH}-{RANGE}'
 
 os.makedirs(BASE_DIR, exist_ok=True)
 
@@ -34,13 +36,12 @@ for _ in tqdm(range(REPEAT), desc="Repeats"):
             {"role": "user", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"Think of an integer between 1 and {RANGE}, but don’t say it to me."},
             {"role": "assistant", "content": f"Got it! I've thought of an integer between 1 and {RANGE}. What's next?"},
-            {"role": "user", "content": f"Is the number you’re thinking of {i + 1}? Answer Yes or No in the following JSON format: {{\"answer\": \"yes_or_no\"}}."}
+            {"role": "user", "content": f"Is the number you’re thinking of {i + 1}? Answer Yes or No."}
         ]
         for attempt in range(RETRY_NUM):
             try:
-                response_text = ask_llm(CLIENT, MODEL, msgs)
-                response = json.loads(extract_last_json(response_text))
-                answer = response.get("answer", "").lower()
+                response_text = ask_llm(CLIENT, MODEL, msgs, temperature=TEMP, top_p=TOPP)
+                answer = response_text[:-1].lower()
                 if answer in ["no", "yes"]:
                     break
             except Exception as e:
