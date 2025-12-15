@@ -40,9 +40,9 @@ A task testing arithmetic and memory retention.
 
 If you use this code or find the work helpful, please cite:
 
-```bibtex
-@article{huang2025llms,
-  title={LLMs Do Not Have Human-Like Working Memory},
+```
+@article{huang2025language,
+  title={Language Models Do Not Have Human-Like Working Memory},
   author={Huang, Jen-tse and Sun, Kaiser and Wang, Wenxuan and Dredze, Mark},
   journal={arXiv preprint arXiv:2505.10571},
   year={2025}
