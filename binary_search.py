@@ -14,7 +14,7 @@ RETRY_NUM = 5
 OBJECT_APPEAR = 'NO' # Options: 'NO', 'FIRST', 'ALL'
 HINT_MODE = False
 
-MODEL = 'random'
+MODEL = 'Qwen/Qwen2.5-7B-Instruct-Turbo'
 NAME_IN_PATH = MODEL.split("/")[-1]
 
 BASE_DIR = f'results/binary_search/{NAME_IN_PATH}-{Q_NUMBER}'
@@ -175,7 +175,7 @@ def run_test():
         question_count = 0
         
         for prop in tqdm(test_list, desc="Question Num"):
-    
+
             target_idx = random.randint(0, len(objects[prop]) - 1)
             target_obj = objects[prop][target_idx]
             direction = random.choice(["pos", "neg"])
@@ -197,14 +197,14 @@ def run_test():
                     except Exception as e:
                         print(f"Failed: {e}; Attempt {attempt+1} failed; retrying...")
                         time.sleep(1)
-    
+
             messages.append({"role": "assistant", "content": answer})
             question_count += 1
     
             if direction == "pos":
-                interval = (False, target_idx, PINF, True) if response == "yes" else (True, NINF, target_idx, True)
+                interval = (False, target_idx, PINF, True) if answer == "yes" else (True, NINF, target_idx, True)
             else:
-                interval = (True, NINF, target_idx, False) if response == "yes" else (True, target_idx, PINF, True)
+                interval = (True, NINF, target_idx, False) if answer == "yes" else (True, target_idx, PINF, True)
             
             new_interval = interval_intersection(interval, valid_objects[prop])
             if not new_interval:

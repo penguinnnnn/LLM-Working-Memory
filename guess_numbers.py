@@ -15,7 +15,7 @@ MODEL = 'gpt-4o-2024-08-06'
 NAME_IN_PATH = MODEL.split("/")[-1]
 TEMP = 1.0
 TOPP = 0.1
-BASE_DIR = f'results/guess_numbers_T{TEMP}P{TOPP}/{NAME_IN_PATH}-{RANGE}'
+BASE_DIR = f'results/guess_numbers/{NAME_IN_PATH}-{RANGE}'
 
 os.makedirs(BASE_DIR, exist_ok=True)
 
@@ -37,10 +37,12 @@ for _ in tqdm(range(REPEAT), desc="Repeats"):
             {"role": "user", "content": f"Think of an integer between 1 and {RANGE}, but don’t say it to me."},
             {"role": "assistant", "content": f"Got it! I've thought of an integer between 1 and {RANGE}. What's next?"},
             {"role": "user", "content": f"Is the number you’re thinking of {i + 1}? Answer Yes or No."}
+            # {"role": "user", "content": f"Now, select between Yes or No and output accordingly."}
         ]
         for attempt in range(RETRY_NUM):
             try:
-                response_text = ask_llm(CLIENT, MODEL, msgs, temperature=TEMP, top_p=TOPP)
+                response_text = ask_llm(CLIENT, MODEL, msgs)
+                print(response_text)
                 answer = response_text[:-1].lower()
                 if answer in ["no", "yes"]:
                     break
